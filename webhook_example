@@ -1,0 +1,12 @@
+#!/bin/bash
+
+WEBHOOK_URL="123412341234"
+
+ROLE_ID="1234567890"
+
+MESSAGE=" <@&$ROLE_ID> Das ist eine Testnachricht!"
+
+curl -H "Content-Type: application/json" \
+     -X POST \
+     -d "{\"content\":\"$MESSAGE\"}" \
+     "$WEBHOOK_URL"
