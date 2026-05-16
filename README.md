@@ -1,40 +1,79 @@
-# les-discord-webhook
-LES Orga Discord Webhooks
+# LES Discord Webhook
 
-SICHERHEITSHINWEIS: Gebe niemals deinen Webhooklink preis!
+Go application to trigger custom Discord webhooks.
 
-Um einfache Aufgaben auf Discord zu automatisieren, können Webhooks verwendet werden.
+> [!NOTE]
+> Keep your webhook url's secret.
 
-Vorraussetzungen für das Skript:
--> curl
--> Webhook-Link von Discord
 
-Um einen Webhook zu generieren, welcher in der Variable WEBHOOK_URL gespeichert wird, benötigst du in Discord die entsprechenden Rechte dazu. Wenn du diese hast, findest du Webhooks unter den Servereinstellungen -> Integrationen -> Webhooks
-Dort kannst du dir einen neuen Webhook erstellen und dann den entsprechenden Channel einstellen wo die Nachricht gesendet werden soll. 
+## Installation
+Copy `config.example.json` to `config.json` and ensure it can't be read by anyone.
 
-Trage nun die Webhookadresse in WEBHOOK_URL ein.
+```bash
+cp config.example.json config.json
+sudo chown root:root config.json
+sudo chmod 640 config.json
+```
 
-Das Skript ist grundsätzlich sehr anpassbar und ist eine sehr einfache Fassung. Nachfolgend findest du einige weitere Informationen wie das Skript funktioniert und wie du es erweitern kannst.
+Adjust the `config.json` file accordingly using a text editor of your choice.
+```json
+{
+    "data": {
+        "Event A": {
+            "cron": "30 14 * * 0",
+            "webhook_url": "https://discord.com/api/webhooks/...",
+            "message": "<@&123456> hola!"
+        },
+        "Event B": {
+            "cron": "0 14 * * 0",
+            "webhook_url": "https://discord.com/api/webhooks/...",
+            "message": "Check out this channel: <#123456>"
+        }
+    }
+}
+```
 
-Das Skript nutzt curl um HTTP-Daten an den Webhook zu senden, welcher diese Daten dann in den konfigurierten Channel sendet.
-Der Curl-Teil des Skripts sollte immer als letztes stehen und nicht verändert werden!
+Build the application or start it using the shipped container image.
 
-Um Rollen zu pingen, wird die ID der Rolle benötigt. Um diese zu erhalten, klicke Rechtsklick auf die Rolle bei einem Nutzer der sie besitzt (oder in der Rollenübersicht) und kopiere dir die Rollen-ID. 
-Sollte der Button nicht angezeigt werden, musst du den Entwicklermodus von Discord aktivieren.
+### Docker
+pull and run via cli
+```bash
+docker pull ghcr.io/leipzigesports/les-discord-webhook:latest
+docker run -it --name les-discord-webhook -v ./config.json:/app/config.json -d les-discord-webhook:latest
+```
 
-Um nun die Rolle zu pingen, füge folgendes in deine Nachricht ein:
-<@&$ROLE_ID>
+or via `compose.yaml`  
+```yaml
+services:
+  les-discord-webhook:
+    ghcr.io/leipzigesports/les-discord-webhook:latest
+    container_name: les-discord-webhook
+    volumes:
+      - ./config.json:/app/config.json
+```
 
-$ROLE_ID ist dabei die Variable welche auch anders heißen kann.
+```bash
+docker compose up -d && docker compose logs -f
+```
 
-Um andere Channel in die Nachricht zu integrieren, schreibe folgendes:
-<#$CHANNEL_ID>
+### Build with go
+```bash
+# run locally
+go run .
 
-Dabei ist $CHANNEL_ID wieder die Variable.
+# build locally
+go build -v -o les-discord-webhook .
+```
 
-Nun da dein Skript fertiggestellt ist, musst du es noch ausführbar machen. Nutze dazu: "chmod +x (Pfad/zum/Skript)"
+## Setup Discord webhook
+1. select channel
+1. open channel settings
+1. navigate to integrations
+1. create webook
+    - select profile picture
+    - enter a 'username'
+    - copy webhook url
+1. create a new section/key in the `config.json` file and insert the webhook url
 
-Um das Skript zu testen, führe es einfach einmal aus. Deine konfigurierte Nachricht sollte nun im Discord erscheinen!
-
-Um das Skript zu automatisieren, kannst du einfach crontab benutzen. Eine Anleitung dafür findest du hier: https://www.stetic.com/developer/cronjob-linux-tutorial-und-crontab-syntax/
-Croncommand Generator: https://crontab.guru/
+### Format message
+you can embed <&`ROLE_ID`> to ping a role, <@`USER_ID`> to ping a user and <#`CHANNEL_ID`> to link to a channel.
