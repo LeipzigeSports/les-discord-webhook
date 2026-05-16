@@ -1,0 +1,14 @@
+{
+    "data": {
+        "Event A": {
+            "cron": "30 14 * * 0",
+            "webhook_url": "https://discord.com/api/webhooks/...",
+            "message": "<@&123456> hola!"
+        },
+        "Event B": {
+            "cron": "0 14 * * 0",
+            "webhook_url": "https://discord.com/api/webhooks/...",
+            "message": "Check out this channel: <#123456>"
+        }
+    }
+}
