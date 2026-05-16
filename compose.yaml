@@ -1,8 +1,7 @@
 services:
   les-discord-webhook:
     # build: .
-    image: les-discord-webhook:v0.0.1-rc.1
-    #image: ghcr.io/leipzigesports/les-discord-webhook:v0.0.1-rc.1
+    image: ghcr.io/leipzigesports/les-discord-webhook:v0.0.1-rc.1
     container_name: les-discord-webhook
     volumes:
       - ./config.json:/app/config.json
