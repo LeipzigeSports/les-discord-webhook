@@ -76,4 +76,4 @@ go build -v -o les-discord-webhook .
 1. create a new section/key in the `config.json` file and insert the webhook url
 
 ### Format message
-you can embed <&`ROLE_ID`> to ping a role, <@`USER_ID`> to ping a user and <#`CHANNEL_ID`> to link to a channel.
+you can embed <@&`ROLE_ID`> to ping a role, <@`USER_ID`> to ping a user and <#`CHANNEL_ID`> to link to a channel.
