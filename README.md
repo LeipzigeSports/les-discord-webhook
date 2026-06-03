@@ -46,8 +46,10 @@ or via `compose.yaml`
 ```yaml
 services:
   les-discord-webhook:
-    ghcr.io/leipzigesports/les-discord-webhook:latest
+    image: ghcr.io/leipzigesports/les-discord-webhook:latest
     container_name: les-discord-webhook
+    environment:
+      - TZ=Europe/Berlin
     volumes:
       - ./config.json:/app/config.json
 ```
