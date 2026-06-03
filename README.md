@@ -48,6 +48,7 @@ services:
   les-discord-webhook:
     image: ghcr.io/leipzigesports/les-discord-webhook:latest
     container_name: les-discord-webhook
+    restart: unless-stopped
     environment:
       - TZ=Europe/Berlin
     volumes:
