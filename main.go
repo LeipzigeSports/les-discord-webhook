@@ -52,8 +52,23 @@ func main() {
 	count := len(config.Data)
 	slog.Info("Config: " + strconv.Itoa(count) + " jobs loaded.")
 
+	// source: https://github.com/jasonlvhit/gocron/issues/22#issuecomment-261903714
+	tz_compose := os.Getenv("TZ")
+	if tz_compose == "" {
+		tz_compose = "Europe/Berlin"
+		slog.Info("TZ: time zone environment variable unset; defaulting to " + tz_compose)
+	}
+
+	location, err := time.LoadLocation(tz_compose)
+	if err != nil {
+		slog.Error("TZ: Configuring time zone failed. Fallback to UTC.")
+		log.Println(err)
+	} else {
+		slog.Info("TZ: time zone set to " + location.String())
+	}
+
 	slog.Info("Scheduler: create...")
-	s, err := gocron.NewScheduler()
+	s, err := gocron.NewScheduler(gocron.WithLocation(location))
 	defer func() { _ = s.Shutdown() }()
 
 	if err != nil {

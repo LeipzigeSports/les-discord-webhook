@@ -3,5 +3,7 @@ services:
     # build: .
     image: ghcr.io/leipzigesports/les-discord-webhook:latest
     container_name: les-discord-webhook
+    environment:
+      - TZ=Europe/Berlin
     volumes:
       - ./config.json:/app/config.json
